@@ -1,0 +1,92 @@
+================================================================================
+                                Scapy
+================================================================================
+
+    O scapy é um programa escrito em python, para fazer a manipulação de pacotes
+de um grande número de protocolos. Também é possivel fazer scannir de rede entre
+outras funções.
+
+    Para utilizalo basta digitar scamy no terminal e será mostrado o modo
+interativo dele, similar ao modo interativo do python.
+
+--------------------------------------------------------------------------------
+Alguns comandos
+--------------------------------------------------------------------------------
+
+    Comando |   Descrição
+    --------+---------------------------------------------
+    lsc()   | Mostra todos os comandos suportados.
+    help()  | Informa sobre o funcionamento do comando. Ex: hrlp(sr)
+    ls()    | Mostra todos os protocolos suportados ou detalhes de um protocolo.
+            | Ex: ls(IP)
+    sr()    | Envia e recebe pacotes na camada 3.
+    sr1()   | Envia e recebe pacotes da camada 3 e mostra somente a primeira
+            | resposta.
+
+--------------------------------------------------------------------------------
+Exemplos de uso:
+--------------------------------------------------------------------------------
+
+Criando um pacote IP informando seu endereço de destino, e armazenado seu
+resultado na variável "pIP":
+
+    pIP = IP(dst="192.168.1.1")
+
+Para mostrar os detalhes do pacote criado:
+
+    pIP.show()
+
+Para mostrar o resumo do pacote:
+
+    pIP.summary()
+
+Criando pacote TCP:
+
+    pTCP = TCP(dport=80, flags="S")
+    pTCP = TCP(dport=[21,22,23,80])
+
+Mudar opções em um pacote já criado:
+
+    pTCP.sport=43778
+
+Encapsular um pacote dentro de outro, e guardando o valor em uma variável:
+
+    pacote = pIP/pTCP
+
+Enviando pacote criado e recebendo apenas uma resposta, guadando seu retorno
+na variável "resposta":
+
+    resposta = sr1(pacote)
+
+Mostrando valores da resposta:
+
+    resposta[IP].dst
+    resposta[TCP].flags
+
+Pegando todas respostas:
+
+    resposta = sr(pacote)
+
+Pegando respostas que tiveram resultado e sem resultado:
+
+    resp, noresp = sr(pacote)
+
+Mostrando o primeiro pacote:
+
+    resp[1]
+
+Criando um pacote IP com ICMP:
+
+    pacote = pIP/ICMP()
+
+Criando pacotes com payload:
+
+    pacote = pIP/ICMP()/"Lugar onde vai o payload"
+    pacote = pIP/pTCP/"payload"
+
+--------------------------------------------------------------------------------
+Para mais informações:
+--------------------------------------------------------------------------------
+
+    https://scapy.readthedocs.io/en/latest/
+    https://github.com/secdev/scapy/blob/master/doc/notebooks/

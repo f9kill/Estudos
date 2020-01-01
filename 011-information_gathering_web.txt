@@ -1,0 +1,234 @@
+================================================================================
+                            Information Gathering Web
+================================================================================
+
+--------------------------------------------------------------------------------
+O que é feito nessa fazer
+--------------------------------------------------------------------------------
+
+    * Identificar Server
+    * Identificar a tecnologia
+    * Identificar diretórios
+    * Identificar arquivos
+    * Identificar controles e bloqueios
+    * Identificar métodos HTTP permitidos
+    * Identificar listagem de diretórios
+    * Identificar estrutura da página
+    * Analisar código fonte
+    * Analisar arquivos encontrados (JavaScript)
+
+--------------------------------------------------------------------------------
+Procedimentos:
+--------------------------------------------------------------------------------
+
+    * Parsing HTML/JS
+    * Clonagem do website
+    * Análise dos arquivos robots.txt/sitemap.xml
+    * Brute force de diretórios/arquivos
+    * Análise de respostas HTTP
+    * Bypass User-Agent
+    * Utilizar um proxy para analizar as requisições.
+    * Whatsweb programa que faz levantamento das tecnologias utilizadas do
+      website.
+    * Wappalyzer plugin para navegadores que mostra tecnologias utilizadas.
+    * Análise de extensões e icon
+    * Análise de erros e banners
+
+--------------------------------------------------------------------------------
+Mapear a página:
+--------------------------------------------------------------------------------
+
+    * Login?
+    * Cadastro? É possível cadastrar?
+    * Tem campo de busca?
+    * É possível inserir dados?
+    * Tem redirecionamento?
+    * Permite upload de arquivos?
+    * Tem arquivos para download?
+    * Tem menssagens de erro?
+    * Utiliza algum banco de dados?
+
+--------------------------------------------------------------------------------
+Robots.txt e sitemap.xml
+--------------------------------------------------------------------------------
+
+robots.txt  -> Usado para informar aos robôs de busca o que pode ou não ser
+               indexado. Geralmente colocado no mesmo diretório do index.html.
+
+               Ex: businesscorp.com.br/robots.txt
+
+Alguns "comandos" do arquivo robotx.txt:
+
+    User-agent  : Informa a qual robo será aplicado as regras.
+    Allow       : Informa quais arquivos e diretórios podem ser indexados.
+    Disallow    : Informa que o arquivo ou diretório não deve ser indexado.
+    Sitemap     : Ajuda os robos a mapear todo o site.
+    
+Exemplo de robots.txt
+
+    +-------------------------------------------------------+
+    | Use-agent: Googlebot                                  |
+    | Disallow: /cgi-bin/                                   |
+    | Disallow: /wp-admin/                                  |
+    |                                                       |
+    | Use-agent: *                                          |
+    | Disallow: /admin                                      |
+    |                                                       |
+    | Sitemap: http://www.businesscorp.com.br/sitemap.xml   |
+    +-------------------------------------------------------+
+
+sitemap.xml -> Contem um mapa do site, mostrando todas as páginas.
+
+--------------------------------------------------------------------------------
+Listagem de diretórios
+--------------------------------------------------------------------------------
+
+Ocorre quando não existe o arquivo index.html no diretório, permitindo a
+visualização dos arquivos presentes no servidor.
+
+--------------------------------------------------------------------------------
+Mirror Website
+--------------------------------------------------------------------------------
+
+Clona o site do alvo para fazer análise offline.
+
+Ex:
+    # Cria um clone do site
+    wget -m google.com
+
+    # Cria um clone do site ignorando o conteudo do arquivo robots.txt
+    wget -m -e robots=off google.com
+
+--------------------------------------------------------------------------------
+Análise de erros, códigos e extensões
+--------------------------------------------------------------------------------
+
+Analisando código fonte do site, é possivel encontrar alguma falha de segurança,
+contida nos comentários, ou códigos com lógicas erradas nos arquivos javascript.
+
+Também se deve verificar as mesagens de erro que do site, que podem revelar
+versões de softwares ou configurações erradas.
+
+--------------------------------------------------------------------------------
+Pesquisa via requisições HTTP
+--------------------------------------------------------------------------------
+
+É possivel tentar descobrir as tecnologias do servidor web com o NetCat:
+
+Ex:
+    # Se conectar no servidor com o netcat.
+    nc -v businesscorp.com.br 80
+
+    # Enviar a requisição:
+    HEAD / HTTP/1.0
+
+    # Recebendo a resposta, que mostra o nome do servidor e a versão:
+    +---------------------------------------------+
+    | HTTP/1.1 200 OK                             |
+    | Date: Mon, 30 Sep 2019 04:00:43 GMT         |
+    | Server: Apache/2.2.22 (Debian)   <<<<       |
+    | Last-Modified: Wed, 25 Sep 2019 17:05:45 GMT|
+    | ETag: "20463-1bb6-59363a9ea0957"            |
+    | Accept-Ranges: bytes                        |
+    | Content-Length: 7094                        |
+    | Vary: Accept-Encoding                       |
+    | Connection: close                           |
+    | Content-Type: text/html                     |
+    +---------------------------------------------+
+
+Também é intereçante informar o nome do arquivo para tentar receber a versão da
+linguagem.
+
+    # Requisição
+    GET /index.php HTTP/1.0
+
+    # Resposta
+    +---------------------------------------------+
+    | HTTP/1.1 200 OK                             |
+    | Date: Thu, 21 Sep 2017 03:56:48 GMT         |
+    | Server: Apache/2.4.7 (Ubuntu)               |
+    | X-Powered-By: PHP/5.5.9-1ubuntu4.22   <<<<  |
+    | Vary: Accept-Encoding                       |
+    | Content-Length: 5544                        |
+    | Connection: close                           |
+    | Content-Type: text/html                     |
+    +---------------------------------------------+
+
+Descorindo os métodos suportados pelo servidor:
+
+    nc -v rh.businesscorp.com.br 80
+
+    # Requisição podendo informar qualquer nome, no exemplo foi usado /desec.
+    OPTIONS /desec HTTP/1.0
+
+    # Resposta    
+    +---------------------------------------------+
+    | HTTP/1.1 200 OK                             |
+    | Date: Thu, 21 Sep 2017 04:12:54 GMT         |
+    | Server: Apache/2.4.7 (Ubuntu)               |
+    | Allow: OPTIONS,GET,HEAD,POST    <<<<        |
+    | Content-Length: 0                           |
+    | Connection: close                           |
+    +---------------------------------------------+
+
+Caso o site fique em um servidor compartilhado ou atrás de um firewall, pode
+ser informado o host para obter o resultado mais exato.
+
+    nc -v businesscorp.com.br 80
+
+    # Requisição
+    HEAD / HTTP/1.0
+    Host:businesscorp.com.br
+
+--------------------------------------------------------------------------------
+Brute force - Arquivos e Diretórios
+--------------------------------------------------------------------------------
+
+Atenção: Alguns sites podem ter bloqueio por User-agent, então é importante
+         fazer sua alteração.
+
+Utilizando o Dirb:
+
+    # Utilizando a wordlist padrão
+    dirb http://businesscorp.com.br
+
+    # Utilizando outra wordlist
+    dirb http://businesscorp.com.br /usr/share/wordlists/big.txt
+
+    # Especificando tipo de arquivos para procurar
+    dirb http://businesscorp.com.br -X .php
+
+
+--------------------------------------------------------------------------------
+Usando o Curl
+--------------------------------------------------------------------------------
+
+Algumas opções:
+
+    Opção   | Descrição
+    --------+--------------------------------------------
+        -v  | Mostra mais informações
+     --head | Mostra só o HEAD da página
+        -s  | Mostra poucas informações
+        -H  | Mudar opções do cabeçalho
+        -w  | Trabalha com variaveis
+        -o  | Direcionar saida
+
+    # Uso padrão
+    curl businesscorp.com.br
+
+    # Mostrando mais informações da página
+    curl -v businesscorp.com.br
+    
+    # Mudando o User-agent
+    curl -v -H "User-Agent:Mozzila/firefox" businesscorp.com.br
+
+    # Mostrar apenas o código da requisição
+    curl -s -o /dev/null -w "%{http_code}" businesscorp.com.br/robots.txt
+
+--------------------------------------------------------------------------------
+Dica utilizando o lynx
+--------------------------------------------------------------------------------
+
+lynx --dump "http://google.com/search?num=100&q=site:"$1"+ext:"$2"" \
+grep ".$2" | cut -d "=" -f2 | egrep -v "site|goole"
