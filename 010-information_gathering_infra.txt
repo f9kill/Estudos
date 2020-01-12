@@ -1,0 +1,30 @@
+=================================================================================
+                        Information Gathering Infra
+=================================================================================
+
+A IANA (Internet Assigned Numbers Authority) é responsável por coordernar alguns
+dos elementos chaves para manter a internet operacional.
+
+    * Gerenciamento dos root servers (Domain Names)
+    * Coordenação de números IP e ASN (Autonomous System Numbers)
+    * Resgistros de protocolos
+
+    iana.org
+    iana.org/domain/root/servers
+    iana.org/numbers
+
+Netblock X ASN
+
+    * Netblock (Bloco de Rede) - Um range ou conjunto de endereços IP.
+    * ASN (Sistema Autonomo) - Um ou mais blocos de rede sob o mesmo
+      administrador.
+
+--------------------------------------------------------------------------------
+                                Whois
+--------------------------------------------------------------------------------
+
+O whois é um protocolo que funciona na porta 43 TCP.
+
+    # Site da iana para fazer pesquisa por nome. IP ou AS.
+    whois.iana.org
+    

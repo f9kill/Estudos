@@ -1,0 +1,35 @@
+================================================================================
+                                Enumeração
+================================================================================
+
+--------------------------------------------------------------------------------
+Qual a importância?
+--------------------------------------------------------------------------------
+
+    * Identificar detalhes do serviço em execução.
+    * Coletar mais informações do host.
+    * As informações complementares podem ajudar nas fases de exploração.
+    * A versão identificada pode ter uma vulnerabilidade conhecida
+      (exploit público)
+    * Alguns serviços podem ser vulneráveis a ataques de força bruta.
+
+--------------------------------------------------------------------------------
+Qual o processo?
+--------------------------------------------------------------------------------
+
+    1 - Identificar detalhes do serviço em execução.
+    2 - Estudar o serviço/protocolo para entender o funcionamento.
+    3 - Tentar interagir com o serviço/protocolo afim de obter mais informações
+        do host.
+    4 - Identificar possíveis vulnerabilidades/vetores de ataque.
+
+--------------------------------------------------------------------------------
+Exemplos
+--------------------------------------------------------------------------------
+
+    * Serviço/protocolo quando mal configurado permite obter mais informações do
+      host.
+    * Serviço/protocolo tem uma vulnerabilidade conhecida (pública).
+    * Serviço/protocolo é vulneravel a um ataque de força bruta (Tentativa e
+      erro).
+    * Serviço/protocolo tem uma vulnerabilidade desconhecida (0Day).
