@@ -33,3 +33,347 @@ Exemplos
     * Serviço/protocolo é vulneravel a um ataque de força bruta (Tentativa e
       erro).
     * Serviço/protocolo tem uma vulnerabilidade desconhecida (0Day).
+
+--------------------------------------------------------------------------------
+HTTP
+--------------------------------------------------------------------------------
+
+    GET / HTTP/1.0
+
+    ou
+
+    GET / HTTP/1.1
+    Host:nomedominio.com
+
+    ou
+    
+    GET /index.aspx HTTP/1.0
+
+--------------------------------------------------------------------------------
+HTTPS
+--------------------------------------------------------------------------------
+
+Necessário utilizar um programa que ententa criptografia.
+
+    openssl s_client -connect www.tesla.com:443
+    HEAD / HTTP/1.1
+    Host:www.tesla.com
+
+--------------------------------------------------------------------------------
+Identificando Web Application Firewalls
+--------------------------------------------------------------------------------
+
+Programa para identificar se a aplicação está passando por um firewall.
+
+    wafw00f www.desecsecurity.com
+
+--------------------------------------------------------------------------------
+Enumerando FTP
+--------------------------------------------------------------------------------
+
+Caso faça login no servidor FTP porem não consiga fazer a listagem de diretórios
+use o modo passivo:
+
+    USER anonymous
+    PASS anonymous
+    passive
+
+No linux pode usar o comando "pasv" ou "pass"
+
+--------------------------------------------------------------------------------
+NetBIOS / SMB
+--------------------------------------------------------------------------------
+
+Resposaveis por compartilhamento de arquivos e diretórios.
+
+
+NetBIOS - (Network Basic Input Output System)
+    Funciona na porta 139 TCP
+    
+SMB - (Service Message Block)
+    Funciona na porta 445 TCP
+
+Null Session
+    Sessão criada sem autenticação de usuário e senha (nulos)
+
+IPC$ - (Inter Process Comunication)
+    Permite que usuários anônimos executem determinadas atividades.
+
+--------------------------------------------------------------------------------
+Enumerando NetBIOS/SMB no Windows
+--------------------------------------------------------------------------------
+
+Limpa o cache.
+    nbtstat -R
+
+Mostra todas as máquinas com quem já se comunicou.
+    nbtstat -c
+
+Vai buscar informações do Host informado.
+    nbtstat -a <nome do host>
+
+Mesma coisa que -a:
+    nbtstat -A <endereço IP>
+
+Ver informações do Host informado.
+    net view \\192.168.1.112
+
+Estabelecer conexão nula (Null Secion):
+    net use \\172.16.1.5 "" /u:""
+
+Montando compartilhamento:
+    net use h: \\172.16.1.5\opt
+
+Desmontar compartilhamento:
+    net use h: /delete
+
+Removendo sessão:
+    net use \\172.16.1.5 /delete
+
+Criando conexão com adminstrador sem senha:
+    net use \\172.16.1.4 "" /u:administrator
+
+--------------------------------------------------------------------------------
+Enumerando NetBIOS/SMB no Linux
+--------------------------------------------------------------------------------
+
+Escaneando a rede a procura do protocolo NetBIOS
+    nbtscan -r 172.16.1.0/24
+
+Listar diretórios ativos:
+    smbclient -L \\172.16.1.5
+
+Listar diretórios ativos sem informar a senha:
+    smbclient -L \\172.16.1.5 -N
+
+Listar diretórios ativos informando apenas o usuário:
+    smbclient -L \\172.16.1.4 -N -U administrator
+
+Conectando a um diretório:
+    smbclient //172.16.1.4/_DOCS -N
+
+Listar diretórios ativos informando outra versão do protocolo:
+    smbclient -L \\172.16.1.5 -N --option='client min protocol=NT1'
+
+--------------------------------------------------------------------------------
+Enumerando com RPC
+--------------------------------------------------------------------------------
+
+Se conectando ao Host usando o rpcclient, sem informar senha e usuário.
+    rpcclient -U "" -N 172.16.1.5
+
+    # Depois de se conectar, verificar todos usuários do Host
+    enumdomusers
+
+    # informações de um usuário
+    queryuser root
+
+    # informações do compartilhamento
+    netshareenum
+
+    # Mostrar informações de todos os compartilhamentos
+    netshareenumall
+
+    # Mostra todos comandos validos
+    ?
+
+--------------------------------------------------------------------------------
+Automatizando a enumeração NetBIOS/SMB
+--------------------------------------------------------------------------------
+
+Mostrar todas as informações.
+    enum4linux -a 172.16.1.5
+
+Mostrar só informações de usuários
+    enum4linux -U 172.16.1.5
+
+Mostrar informações, informando usuário sem senha
+    enum4linux -a 172.16.1.5 -u administrator -p
+
+--------------------------------------------------------------------------------
+Scripts para enumeração NetBIOS/SMB
+--------------------------------------------------------------------------------
+
+Verificando versão do sistema operacional
+    nmap -v --script=smb-os-discovery 172.16.1.140
+
+--------------------------------------------------------------------------------
+Enumerando POP3
+--------------------------------------------------------------------------------
+
+POP3 funciona na porta 110 TCP.
+
+Se conectando ao protocolo POP3
+    nc -v 37.59.174.227 110
+
+    # Enviando usuário
+    USER admin
+
+    # Enviando senha
+    PASS admin
+
+    # Mostrar o status
+    STAT
+
+    # Listar as mensagens
+    LIST
+
+    # Ver a primeira mensagem
+    RETR 1
+
+--------------------------------------------------------------------------------
+Enumerando SMTP
+--------------------------------------------------------------------------------
+
+SMTP funciona na porta 25 TCP
+
+Se conectando ao protocolo SMTP
+    nc -v 172.30.0.128 25
+
+    # Enviando comando HELLO ou EHLO.
+    HELLO mensagem
+    ou
+    EHLO mensagem
+
+    # Verificando se usuário existe.
+    VRFY ricardo
+
+    # Enviando E-Mail para o root se passando pelo usuário pentest
+    mail from: pentest
+    rcpt to: root
+
+--------------------------------------------------------------------------------
+Enumerando Telnet
+--------------------------------------------------------------------------------
+
+Telnet funciona na porta 23 TCP.
+
+É mais comum encontrar o protocolo telnet ativo em roteadores e switchs.
+
+Buscar por credenciais do fabricante
+    * https://cirt.net/passwords
+    * https://datarecovery.com/rd/default-passwords/
+    * Consultar manual do fabricante.
+
+Se conectando:
+    telnet 172.16.1.5
+
+    # Verificando todas interfaces de rede.
+    show interfaces
+
+    # Entrar no modo administrativo.
+    configure
+
+--------------------------------------------------------------------------------
+Enumerando SSH
+--------------------------------------------------------------------------------
+
+O protocolo SSH funciona na porta 22 TCP.
+
+Verificar os métodos que o servidor aceita para autenticação.
+    ssh -v 172.16.1.5
+
+--------------------------------------------------------------------------------
+Autenticação com chave pública
+--------------------------------------------------------------------------------
+
+Arquivo de configuração do SSH
+    /etc/ssh/sshd_config
+
+Para permitir que um usuário se autentique no servidor através do SSH, é
+necessário, cadastrar a chave ssh publica no arquivo "authorized_keys", do
+servidor, que fica em ~/.ssh/authorized_keys.
+    Também é necessário adiconar a sua chave privada no seu sistema através do
+comando "ssh-add <chave privada>"
+
+--------------------------------------------------------------------------------
+Enumerando Network File System
+--------------------------------------------------------------------------------
+
+Funciona na porta 2049 TCP.
+
+Protocolo para compartilhamento de arquivos.
+
+Verificar as versões que suportadas pelo protocolo.
+    rpcinfo -p 172.16.1.5 | grep nfs
+
+Mostrar os compartilhamentos exportados.
+    showmount -e 172.16.1.5
+
+Montando o compartilhamento ativo na versão 2.
+    mount -t nfs -o nsfvers=2 172.16.1.5:/ /mnt
+
+--------------------------------------------------------------------------------
+Enumerando SNMP
+--------------------------------------------------------------------------------
+
+Funciona na porta 161 UDP.
+
+Protocolo para gerenciamento de dispositivos na rede.
+
+OID (Object Identifier)
+    Código utilizado para identificar os objetos.
+
+MIB (mangement Information Base)
+    Base contendo informações relacionadas ao gerenciamento de redes.
+
+    Valores
+        1.3.6.1.2.1.25.1.6.0    -> Processos do sistema
+        1.3.6.1.4.1.77.1.2.25   -> Contas de usuários
+        1.3.6.1.2.1.6.13.1.3    -> Portas TCP
+
+    Referências
+        www.alvestrand.no/objectid/1.3.6.1.2.1.html
+        www.oid-info.com
+
+Community
+    Valor Utilizado entre as partes snmp para troca de informações.
+
+    Nível de acesso
+        RO (Read Only) - Acesso de leitura.
+        RW (Read Write) - Acesso de leitura/escrita.
+
+    Community
+        public, manager, private, acces, cisco, secret, juniper
+
+Enumerando community:
+    onesixtyone -c lista-community.txt 172.16.1.0/24
+
+Fazendo consulta no Host
+    snmpwalk -c public -v1 172.16.1.4 1.3.6.1.4.1.77.1.2.25
+
+--------------------------------------------------------------------------------
+Alterando informações via SNMP
+--------------------------------------------------------------------------------
+
+Fazer enumeração de forma mais altomatizada.
+    snmp-check -c public 172.16.1.4
+
+A community "manager" tem permissão de alterar dados.
+
+Alterando valor através do snmp
+    snmpset -c manager -v1 172.16.1.247 SNMPv2-MIB::sysContact.0 s "Desec"
+
+--------------------------------------------------------------------------------
+Enumerando MySQL
+--------------------------------------------------------------------------------
+
+Funciona na porta 3306 TCP.
+
+Fazendo conexão remota.
+    mysql -h 172.16.1.5 -u root -p
+
+--------------------------------------------------------------------------------
+Enumerando IMAP
+--------------------------------------------------------------------------------
+Login IMAP
+    a LOGIN camila ca123456
+
+Ver diretórios
+    a LIST "" *
+
+Selecionar diretório
+    a SELECT "INBOX.Sent"
+
+Ler corpo das mensagens
+    a FETCH 1 BODY[]
