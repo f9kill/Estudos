@@ -377,3 +377,7 @@ Selecionar diretório
 
 Ler corpo das mensagens
     a FETCH 1 BODY[]
+
+Referências:
+    http://blog.andrewc.com/2013/01/connect-to-imap-server-with-telnet/
+    https://www.atmail.com/blog/advanced-imap/
