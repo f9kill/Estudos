@@ -1,0 +1,25 @@
+================================================================================
+                        Análise de vulnerabilidade
+================================================================================
+
+Identificar os possiveis problemas do ambiente.
+
+--------------------------------------------------------------------------------
+Processo manual
+--------------------------------------------------------------------------------
+
+    1) Identificar o sistema operacional.
+    2) Identificar a possível versão do software/aplicação/sistema.
+    3) Buscar por vulnerabilidades conhecidas.
+    4) Tentar identificar vulnerabilidades não conhecidas.
+    5) Se possível tentar outros tipos de ataques (brute-force)
+
+Referências:
+    www.exploit-db.com
+    www.securityfocus.com/vulnerabilities
+    www.cvedetails.com
+    nvd.nist.gov/vuln/search
+    www.rapid7.com/db/?q=&type=
+    packetstormsecurity.com/file/tags/exploit/
+
+    searchsploit - utilitário para busca de exploits (exploit-db)

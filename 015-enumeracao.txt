@@ -301,7 +301,7 @@ Mostrar os compartilhamentos exportados.
     showmount -e 172.16.1.5
 
 Montando o compartilhamento ativo na versão 2.
-    mount -t nfs -o nsfvers=2 172.16.1.5:/ /mnt
+    mount -t nfs -o nfsvers=2 172.16.1.5:/ /mnt
 
 --------------------------------------------------------------------------------
 Enumerando SNMP
@@ -335,6 +335,12 @@ Community
 
     Community
         public, manager, private, acces, cisco, secret, juniper
+
+Pacote de tradução das MIBs
+    apt install snmp-mibs-downloader
+
+    # Depois de instalado o pacote, necessário criar o arquivo "snmp.conf"
+    > /etc/snmp/snmp.conf
 
 Enumerando community:
     onesixtyone -c lista-community.txt 172.16.1.0/24
