@@ -1,0 +1,78 @@
+=================================================================================
+                                  MySQL
+=================================================================================
+
+Conectar ao bando:
+
+    mysql -u root -h 172.168.1.20
+
+Comandos basicos:
+
+    show databases();           -> Mostra banco de dados existentes.
+    show tables;                -> Mostra tabelas no banco.
+    describe <nome da tabela>   -> Mostra as propriedades da tabela.
+    select database();          -> mostra banco de dados usado.
+    select user();              -> mostra usuáario usado.
+    select version();           -> mostra versão do banco de dados.
+
+    CREATE DATABASE desec;
+    
+    USE desec;
+
+    CREATE TABLE usuarios(
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        login VARCHAR(20) NOT NULL,
+        senha VARCHAR(20) NOT NULL);
+
+    SELECT * FROM usuarios;
+
+    INSERT INTO usuarios VALUES ('1','admin','123');
+
+    SELECT * FROM usuarios WHERE id="1";
+
+    SELECT * FROM usuarios ORDER BY login;
+
+    DELETE FROM usuarios WHERE id="1";
+
+    SELECT CONCAT(login, ':', senha) FROM usuarios;
+
+    DROP desec;
+    
+Carregar arquivos:
+
+    SELECT LOAD_FILE('/var/www/html/index.html');
+
+Outros comandos:
+
+    SELECT sleep(5);                -> Aguarda 5 segundos.
+    SELECT char(65);                -> Tras o valor em ASCII.
+    SELECT length("desec");         -> Informa a quantidade de caracteres.
+    SELECT substring("desec",1,1);  -> Tras o primeiro caracter.
+
+
+SQL Injection:
+
+    SELECT * FROM usuarios WHERE login='hacker' OR 1=1 LIMIT 1;#
+
+================================================================================
+                Procurando diretórios
+================================================================================
+
+Usando o gobuster:
+
+    gobuster dir -u http://172.16.1.10/ -w /usr/share/wordlists/dirb/big.txt
+    gobuster dir -u http://172.16.1.10/ -w /usr/share/wordlists/dirb/big.txt -x .php,.sql,.txt
+
+================================================================================
+                        Métodos aceitos
+================================================================================
+
+Verificando metodos aceitos:
+
+    curl -v -X OPTIONS http://172.16.1.10/
+    curl -X PUT http://172.16.1.10/webdav/desec.php
+    curl -v -X DELETE http://172.16.1.10/webdev/desec.php
+    
+    nc -v 172.16.1.10 -C
+        PUT /webdev/teste.php HTTP/1.0
+        Host:172.16.1.10   
